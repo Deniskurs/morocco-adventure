@@ -6,7 +6,6 @@
   "scripts": {
     "dev": "python3 start-server.py",
     "start": "python3 start-server.py",
-    "build": "node inject-env.js",
     "preview": "python3 -m http.server 8000",
     "deploy": "vercel --prod"
   },
