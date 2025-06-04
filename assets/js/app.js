@@ -1,4 +1,4 @@
-// Main Application Controller
+// Component-Based Morocco Adventure Dashboard
 class MoroccoAdventureApp {
   constructor() {
     this.weatherService = null;
@@ -16,14 +16,11 @@ class MoroccoAdventureApp {
       // Initialize services
       await this.initializeServices();
 
-      // Setup UI components
-      this.setupUIComponents();
+      // Render all components
+      this.renderComponents();
 
       // Load enhanced sections
       await this.loadEnhancedSections();
-
-      // Start real-time updates
-      this.startRealTimeUpdates();
 
       // Setup event listeners
       this.setupEventListeners();
@@ -31,8 +28,8 @@ class MoroccoAdventureApp {
       // Initialize PWA features
       this.initializePWA();
 
-      // Setup offline/online detection
-      this.setupNetworkDetection();
+      // Start real-time updates
+      this.startRealTimeUpdates();
 
       this.isInitialized = true;
       console.log("✅ Morocco Adventure Dashboard initialized successfully!");
@@ -49,7 +46,6 @@ class MoroccoAdventureApp {
 
   // Initialize services with API keys
   async initializeServices() {
-    // Note: In production, these should come from environment variables
     const googleMapsKey = API_KEYS.GOOGLE_MAPS || "demo-mode";
     const weatherKey = API_KEYS.OPENWEATHER || "demo-mode";
 
@@ -68,46 +64,194 @@ class MoroccoAdventureApp {
     window.mapsService = this.mapsService;
   }
 
-  // Setup UI components and interactions
-  setupUIComponents() {
-    // Enhanced stats cards with live data
-    this.enhanceStatsCards();
+  // Render all components from data
+  renderComponents() {
+    this.renderStatsGrid();
+    this.renderRouteMap();
+    this.renderTimeline();
+    this.renderCostBreakdown();
+    this.renderTransportSchedule();
+    this.renderWorkSchedule();
+    this.renderAlerts();
+    this.renderProgressTracker();
+    this.renderCountdownTimers();
+  }
 
-    // Dynamic countdown timers
-    this.setupCountdownTimers();
+  // Render stats grid
+  renderStatsGrid() {
+    const statsData = [
+      {
+        value: TripData.trip.totalDays,
+        label: "Total Days",
+        section: "journey",
+      },
+      {
+        value: TripData.trip.cities,
+        label: "Cities",
+        section: "map",
+      },
+      {
+        value: TripData.trip.estimatedCost,
+        label: "Accommodation",
+        section: "cost",
+      },
+      {
+        value: `~${TripData.trip.workDays}`,
+        label: "Work Days",
+        section: "work",
+      },
+    ];
 
-    // Enhanced day cards with real-time features
-    this.enhanceDayCards();
+    const statsHtml = statsData
+      .map((stat) => Components.StatsCard(stat))
+      .join("");
 
-    // Smart notifications
-    this.setupSmartNotifications();
+    renderComponent("stats-grid", statsHtml);
+  }
 
-    // Currency converter
-    this.setupCurrencyConverter();
+  // Render route map
+  renderRouteMap() {
+    const cityNodesHtml = TripData.locations
+      .map((location) => Components.CityNode(location))
+      .join("");
 
-    // Emergency info modal
-    this.setupEmergencyInfo();
+    const routeMapHtml = `
+      <div class="route-line"></div>
+      ${cityNodesHtml}
+    `;
 
-    // Language helper
-    this.setupLanguageHelper();
+    renderComponent("route-map", routeMapHtml);
+  }
+
+  // Render journey timeline
+  renderTimeline() {
+    const timelineHtml = `
+      <div class="timeline-line"></div>
+      ${TripData.itinerary.map((day) => Components.DayCard(day)).join("")}
+    `;
+
+    renderComponent("timeline", timelineHtml);
+  }
+
+  // Render cost breakdown
+  renderCostBreakdown() {
+    // Add total calculation
+    const costsWithTotal = [
+      ...TripData.costs,
+      {
+        item: "TOTAL (estimate)",
+        amount: TripData.trip.estimatedCost,
+        status: "total",
+      },
+    ];
+
+    const costHtml = costsWithTotal
+      .map((cost) => Components.CostItem(cost))
+      .join("");
+
+    renderComponent("cost-breakdown", costHtml);
+  }
+
+  // Render transport schedule
+  renderTransportSchedule() {
+    const transportHtml = TripData.transport
+      .map((transport) => Components.TransportItem(transport))
+      .join("");
+
+    renderComponent("transport-schedule", transportHtml);
+  }
+
+  // Render work schedule
+  renderWorkSchedule() {
+    // Add total to work schedule
+    const workWithTotal = [
+      ...TripData.workSchedule,
+      {
+        date: "TOTAL",
+        location: "All locations",
+        duration: `~${TripData.trip.workDays} work days`,
+        details: "",
+      },
+    ];
+
+    const workHtml = workWithTotal
+      .map((work) => Components.WorkPeriod(work))
+      .join("");
+
+    renderComponent("work-schedule", workHtml);
+  }
+
+  // Render alerts
+  renderAlerts() {
+    const alertsHtml = TripData.alerts
+      .map((alert) => Components.AlertItem(alert))
+      .join("");
+
+    renderComponent("alerts-list", alertsHtml);
+  }
+
+  // Render progress tracker
+  renderProgressTracker() {
+    const progressHtml = Components.ProgressTracker(TripData);
+
+    // Insert after header
+    const header = document.querySelector(".header");
+    const progressDiv = document.createElement("div");
+    progressDiv.innerHTML = progressHtml;
+    header.parentNode.insertBefore(progressDiv, header.nextSibling);
+  }
+
+  // Render countdown timers
+  renderCountdownTimers() {
+    const countdownSection = document.createElement("section");
+    countdownSection.className = "countdown-section";
+    countdownSection.innerHTML = `
+      <h2 class="section-title">⏰ Live Countdown</h2>
+      <div class="countdown-grid">
+        ${Components.CountdownTimer("2025-06-18T00:00:00", "🛫 Trip Departure")}
+        ${Components.CountdownTimer(
+          "2025-07-11T00:00:00",
+          "✈️ Omar's NYC Flight"
+        )}
+      </div>
+    `;
+
+    // Insert after progress tracker
+    const header = document.querySelector(".header");
+    header.parentNode.insertBefore(countdownSection, header.nextSibling);
+
+    // Start countdown updates
+    this.updateCountdowns();
+    setInterval(() => this.updateCountdowns(), 60000);
+  }
+
+  // Update countdown displays
+  updateCountdowns() {
+    const countdownElements = document.querySelectorAll(".countdown-timer");
+
+    countdownElements.forEach((element) => {
+      const targetDate = new Date(element.dataset.target);
+      const timeUntil = TravelUtils.getTimeUntil(targetDate);
+
+      if (!timeUntil.expired) {
+        const daysElement = element.querySelector(".countdown-days");
+        const hoursElement = element.querySelector(".countdown-hours");
+
+        if (daysElement) daysElement.textContent = timeUntil.days;
+        if (hoursElement) hoursElement.textContent = timeUntil.hours;
+      } else {
+        element.querySelector(".countdown-display").innerHTML =
+          "<p>🎉 Event has occurred!</p>";
+      }
+    });
   }
 
   // Load enhanced sections
   async loadEnhancedSections() {
-    // Load weather dashboard
     await this.loadWeatherDashboard();
-
-    // Load interactive map
     await this.loadInteractiveMap();
-
-    // Load real-time travel updates
-    this.loadTravelUpdates();
-
-    // Load smart recommendations
-    this.loadSmartRecommendations();
-
-    // Load collaboration features
     this.loadCollaborationFeatures();
+    this.loadUtilityFeatures();
   }
 
   // Load weather dashboard
@@ -153,10 +297,12 @@ class MoroccoAdventureApp {
         TripData.locations
       );
       const multiCityContainer = document.getElementById("multi-city-content");
-      multiCityContainer.innerHTML = "";
-      multiCityWidgets.forEach((widget) =>
-        multiCityContainer.appendChild(widget)
-      );
+      if (multiCityContainer) {
+        multiCityContainer.innerHTML = "";
+        multiCityWidgets.forEach((widget) =>
+          multiCityContainer.appendChild(widget)
+        );
+      }
 
       // Load current location weather (first location for demo)
       const currentLocation = TripData.locations[0];
@@ -166,55 +312,23 @@ class MoroccoAdventureApp {
           currentLocation.coordinates.lat,
           currentLocation.coordinates.lng
         );
-      document.getElementById("current-weather-content").innerHTML = "";
-      document
-        .getElementById("current-weather-content")
-        .appendChild(currentWeatherWidget);
-
-      // Load forecast for main destination
-      const forecastWidget = await this.weatherWidget.renderForecast(
-        "Marrakesh",
-        31.6295,
-        -7.9811
+      const currentWeatherContent = document.getElementById(
+        "current-weather-content"
       );
-      document.getElementById("forecast-content").innerHTML = "";
-      document.getElementById("forecast-content").appendChild(forecastWidget);
-
-      // Load weather recommendations
-      const marrakeshWeather = await this.weatherService.getCurrentWeather(
-        "Marrakesh",
-        31.6295,
-        -7.9811
-      );
-      const recommendations =
-        this.weatherService.getWeatherRecommendations(marrakeshWeather);
-      this.displayWeatherRecommendations(recommendations);
+      if (currentWeatherContent) {
+        currentWeatherContent.innerHTML = "";
+        currentWeatherContent.appendChild(currentWeatherWidget);
+      }
     } catch (error) {
       console.error("Error loading weather data:", error);
-      document.getElementById("current-weather-content").innerHTML =
-        "⚠️ Weather data temporarily unavailable";
+      const currentWeatherContent = document.getElementById(
+        "current-weather-content"
+      );
+      if (currentWeatherContent) {
+        currentWeatherContent.innerHTML =
+          "⚠️ Weather data temporarily unavailable";
+      }
     }
-  }
-
-  // Display weather recommendations
-  displayWeatherRecommendations(recommendations) {
-    const container = document.getElementById("recommendations-content");
-    if (recommendations.length === 0) {
-      container.innerHTML =
-        "<p>✅ Current conditions look good for travel!</p>";
-      return;
-    }
-
-    container.innerHTML = recommendations
-      .map(
-        (rec) => `
-      <div class="recommendation-item ${rec.type}">
-        <span class="rec-icon">${rec.icon}</span>
-        <span class="rec-message">${rec.message}</span>
-      </div>
-    `
-      )
-      .join("");
   }
 
   // Load interactive map
@@ -247,15 +361,12 @@ class MoroccoAdventureApp {
 
         // Add map controls
         this.addMapControls(mapContainer);
-
-        // Highlight current location if trip is active
-        setTimeout(() => this.mapsService.highlightCurrentLocation(), 2000);
       } catch (error) {
         console.error("Error loading interactive map:", error);
         interactiveMapContainer.innerHTML = `
           <div class="map-error">
             <p>🗺️ Interactive map temporarily unavailable</p>
-            <button onclick="mapsService.openInGoogleMaps()" class="map-action-btn">
+            <button onclick="window.open('https://goo.gl/maps/morocco')" class="map-action-btn">
               Open in Google Maps
             </button>
           </div>
@@ -284,257 +395,217 @@ class MoroccoAdventureApp {
     container.appendChild(controls);
   }
 
-  // Enhanced stats cards
-  enhanceStatsCards() {
-    const statsCards = document.querySelectorAll(".stat-card");
-    statsCards.forEach((card, index) => {
-      // Add real-time data updates
-      const valueElement = card.querySelector(".stat-value");
-      const originalValue = valueElement.textContent;
-
-      // Add animation on hover
-      card.addEventListener("mouseenter", () => {
-        if (index === 0) {
-          // Days remaining animation
-          const tripStart = new Date("2025-06-18");
-          const today = new Date();
-          const daysUntil = Math.ceil(
-            (tripStart - today) / (1000 * 60 * 60 * 24)
-          );
-          if (daysUntil > 0) {
-            TravelUtils.animateValue(valueElement, 0, daysUntil, 1000);
-            card.querySelector(".stat-label").textContent = "Days Until Trip";
-          }
-        }
-      });
-
-      card.addEventListener("mouseleave", () => {
-        valueElement.textContent = originalValue;
-        card.querySelector(".stat-label").textContent =
-          card.querySelector(".stat-label").getAttribute("data-original") ||
-          card.querySelector(".stat-label").textContent;
-      });
-
-      // Store original label text
-      const label = card.querySelector(".stat-label");
-      label.setAttribute("data-original", label.textContent);
-    });
+  // Load collaboration features
+  loadCollaborationFeatures() {
+    this.addCollaborativeNotes();
+    this.addSharedPackingList();
+    this.addPhotoSharing();
   }
 
-  // Setup countdown timers
-  setupCountdownTimers() {
-    const tripStart = new Date("2025-06-18T00:00:00");
-    const omarDeparture = new Date("2025-07-11T00:00:00");
+  // Load utility features
+  loadUtilityFeatures() {
+    this.setupCurrencyConverter();
+    this.setupEmergencyInfo();
+    this.setupLanguageHelper();
+  }
 
-    // Create countdown section
-    const countdownSection = document.createElement("section");
-    countdownSection.className = "countdown-section";
-    countdownSection.innerHTML = `
-      <h2 class="section-title">⏰ Live Countdown</h2>
-      <div class="countdown-grid">
-        <div class="countdown-card">
-          <h3>🛫 Trip Departure</h3>
-          <div id="trip-countdown" class="countdown-display">
-            <div class="countdown-item">
-              <span class="countdown-number" id="trip-days">0</span>
-              <span class="countdown-label">Days</span>
-            </div>
-            <div class="countdown-item">
-              <span class="countdown-number" id="trip-hours">0</span>
-              <span class="countdown-label">Hours</span>
-            </div>
-            <div class="countdown-item">
-              <span class="countdown-number" id="trip-minutes">0</span>
-              <span class="countdown-label">Minutes</span>
-            </div>
-          </div>
+  // Add collaborative notes
+  addCollaborativeNotes() {
+    const notesSection = document.createElement("section");
+    notesSection.className = "notes-section";
+    notesSection.innerHTML = `
+      <h2 class="section-title">📝 Shared Notes</h2>
+      <div class="notes-container">
+        <textarea id="shared-notes" placeholder="Add shared notes, ideas, or reminders here..."></textarea>
+        <div class="notes-actions">
+          <button onclick="app.saveNotes()" class="save-notes-btn">💾 Save Notes</button>
+          <button onclick="app.exportNotes()" class="export-notes-btn">📄 Export</button>
         </div>
-        <div class="countdown-card">
-          <h3>✈️ Omar's NYC Flight</h3>
-          <div id="omar-countdown" class="countdown-display">
-            <div class="countdown-item">
-              <span class="countdown-number" id="omar-days">0</span>
-              <span class="countdown-label">Days</span>
-            </div>
-            <div class="countdown-item">
-              <span class="countdown-number" id="omar-hours">0</span>
-              <span class="countdown-label">Hours</span>
-            </div>
-            <div class="countdown-item">
-              <span class="countdown-number" id="omar-minutes">0</span>
-              <span class="countdown-label">Minutes</span>
-            </div>
-          </div>
+        <div class="notes-info">
+          <p>Last updated: <span id="notes-timestamp">Never</span></p>
         </div>
       </div>
     `;
 
-    // Insert after header
-    const header = document.querySelector(".header");
-    header.parentNode.insertBefore(countdownSection, header.nextSibling);
+    // Insert before alerts section
+    const alertsSection = document.querySelector(".alerts-section");
+    alertsSection.parentNode.insertBefore(notesSection, alertsSection);
 
-    // Update countdowns every minute
-    this.updateCountdowns(tripStart, omarDeparture);
-    setInterval(() => this.updateCountdowns(tripStart, omarDeparture), 60000);
+    // Load saved notes
+    this.loadSavedNotes();
   }
 
-  // Update countdown displays
-  updateCountdowns(tripStart, omarDeparture) {
-    const tripTime = TravelUtils.getTimeUntil(tripStart);
-    const omarTime = TravelUtils.getTimeUntil(omarDeparture);
+  // Load saved notes
+  loadSavedNotes() {
+    const savedNotes = TravelUtils.loadFromStorage("shared-notes", "");
+    const timestamp = TravelUtils.loadFromStorage("notes-timestamp", "Never");
 
-    if (!tripTime.expired) {
-      document.getElementById("trip-days").textContent = tripTime.days;
-      document.getElementById("trip-hours").textContent = tripTime.hours;
-      document.getElementById("trip-minutes").textContent = tripTime.minutes;
-    } else {
-      document.getElementById("trip-countdown").innerHTML =
-        "<p>🎉 Trip in progress!</p>";
-    }
+    const notesElement = document.getElementById("shared-notes");
+    const timestampElement = document.getElementById("notes-timestamp");
 
-    if (!omarTime.expired) {
-      document.getElementById("omar-days").textContent = omarTime.days;
-      document.getElementById("omar-hours").textContent = omarTime.hours;
-      document.getElementById("omar-minutes").textContent = omarTime.minutes;
-    } else {
-      document.getElementById("omar-countdown").innerHTML =
-        "<p>✈️ Omar has departed!</p>";
-    }
+    if (notesElement) notesElement.value = savedNotes;
+    if (timestampElement) timestampElement.textContent = timestamp;
   }
 
-  // Enhanced day cards with real-time features
-  enhanceDayCards() {
-    const dayCards = document.querySelectorAll(".day-card");
-    dayCards.forEach((card, index) => {
-      const dayData = TripData.itinerary[index];
-      if (!dayData) return;
+  // Save notes
+  saveNotes() {
+    const notesElement = document.getElementById("shared-notes");
+    const timestampElement = document.getElementById("notes-timestamp");
 
-      // Add QR code for bookings
-      if (dayData.accommodation && dayData.accommodation.bookingRef) {
-        const qrButton = document.createElement("button");
-        qrButton.className = "qr-btn";
-        qrButton.innerHTML = "📱 QR Code";
-        qrButton.onclick = () =>
-          this.showQRCode(
-            dayData.accommodation.bookingRef,
-            dayData.accommodation.name
-          );
+    if (!notesElement) return;
 
-        const accommodationInfo = card.querySelector(".accommodation-info");
-        if (accommodationInfo) {
-          accommodationInfo.appendChild(qrButton);
-        }
-      }
+    const notes = notesElement.value;
+    const timestamp = new Date().toLocaleString();
 
-      // Add real-time updates for current day
-      const today = new Date();
-      const dayDate = new Date(dayData.date);
-      const isToday = dayDate.toDateString() === today.toDateString();
+    TravelUtils.saveToStorage("shared-notes", notes);
+    TravelUtils.saveToStorage("notes-timestamp", timestamp);
 
-      if (isToday) {
-        card.classList.add("current-day");
-        const currentIndicator = document.createElement("div");
-        currentIndicator.className = "current-day-indicator";
-        currentIndicator.innerHTML = "📍 TODAY";
-        card.insertBefore(currentIndicator, card.firstChild);
-      }
+    if (timestampElement) {
+      timestampElement.textContent = timestamp;
+    }
 
-      // Add time zone display for international locations
-      if (dayData.location.includes("→")) {
-        const timeZoneDisplay = document.createElement("div");
-        timeZoneDisplay.className = "timezone-display";
-        timeZoneDisplay.innerHTML = `🕐 Local time: ${TravelUtils.getCurrentTimeInTimezone(
-          "Africa/Casablanca"
-        )}`;
-        card.appendChild(timeZoneDisplay);
-      }
+    TravelUtils.showNotification("Notes Saved", {
+      body: "Your shared notes have been saved locally",
+      icon: "📝",
     });
   }
 
-  // Show QR code modal
-  showQRCode(bookingRef, accommodationName) {
-    const qrUrl = TravelUtils.generateQRCode(
-      `Booking: ${accommodationName} - Ref: ${bookingRef}`
-    );
+  // Export notes
+  exportNotes() {
+    const notesElement = document.getElementById("shared-notes");
+    if (!notesElement) return;
 
-    const modal = document.createElement("div");
-    modal.className = "qr-modal";
-    modal.innerHTML = `
-      <div class="qr-modal-content">
-        <div class="qr-modal-header">
-          <h3>📱 Booking QR Code</h3>
-          <button class="qr-modal-close" onclick="this.parentElement.parentElement.parentElement.remove()">×</button>
-        </div>
-        <div class="qr-modal-body">
-          <img src="${qrUrl}" alt="QR Code" class="qr-code-image">
-          <p><strong>${accommodationName}</strong></p>
-          <p>Booking Reference: ${bookingRef}</p>
-          <p class="qr-instructions">Scan with your phone camera to save booking details</p>
+    const notes = notesElement.value;
+    const blob = new Blob([notes], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "morocco-adventure-notes.txt";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  // Add shared packing list
+  addSharedPackingList() {
+    const packingSection = document.createElement("section");
+    packingSection.className = "packing-section";
+    packingSection.innerHTML = `
+      <h2 class="section-title">🎒 Shared Packing List</h2>
+      <div class="packing-container">
+        <div class="packing-categories">
+          ${this.createPackingCategory("clothing", "👕 Clothing")}
+          ${this.createPackingCategory("toiletries", "🧴 Toiletries")}
+          ${this.createPackingCategory("electronics", "📱 Electronics")}
+          ${this.createPackingCategory("other", "📋 Other")}
         </div>
       </div>
     `;
 
-    document.body.appendChild(modal);
+    // Insert before notes section
+    const notesSection = document.querySelector(".notes-section");
+    notesSection.parentNode.insertBefore(packingSection, notesSection);
 
-    // Auto-remove after 10 seconds
-    setTimeout(() => {
-      if (modal.parentNode) {
-        modal.remove();
+    // Load saved packing list
+    this.loadPackingList();
+  }
+
+  // Create packing category HTML
+  createPackingCategory(category, title) {
+    return `
+      <div class="packing-category">
+        <h3>${title}</h3>
+        <div id="${category}-list" class="packing-list"></div>
+        <div class="add-item">
+          <input type="text" id="${category}-input" placeholder="Add ${category} item...">
+          <button onclick="app.addPackingItem('${category}')">Add</button>
+        </div>
+      </div>
+    `;
+  }
+
+  // Load packing list from storage
+  loadPackingList() {
+    const categories = ["clothing", "toiletries", "electronics", "other"];
+    categories.forEach((category) => {
+      const items = TravelUtils.loadFromStorage(`packing-${category}`, []);
+      const container = document.getElementById(`${category}-list`);
+      if (container) {
+        container.innerHTML = "";
+        items.forEach((item) => this.renderPackingItem(category, item));
       }
-    }, 10000);
+    });
   }
 
-  // Setup smart notifications
-  setupSmartNotifications() {
-    // Request notification permission
-    if ("Notification" in window && Notification.permission === "default") {
-      Notification.requestPermission();
-    }
+  // Add packing item
+  addPackingItem(category) {
+    const input = document.getElementById(`${category}-input`);
+    if (!input) return;
 
-    // Check for urgent alerts
-    const urgentAlerts = TripData.alerts.filter(
-      (alert) => alert.priority === "high"
-    );
-    if (urgentAlerts.length > 0) {
-      urgentAlerts.forEach((alert) => {
-        TravelUtils.showNotification(`🚨 ${alert.title}`, {
-          body: alert.description,
-          icon: "⚠️",
-          tag: alert.title,
-        });
-      });
-    }
+    const itemText = input.value.trim();
+    if (!itemText) return;
 
-    // Setup reminder notifications for upcoming events
-    this.setupReminderNotifications();
+    const item = {
+      id: Date.now(),
+      text: itemText,
+      packed: false,
+      addedBy: "User",
+    };
+
+    // Save to storage
+    const items = TravelUtils.loadFromStorage(`packing-${category}`, []);
+    items.push(item);
+    TravelUtils.saveToStorage(`packing-${category}`, items);
+
+    // Render item
+    this.renderPackingItem(category, item);
+
+    // Clear input
+    input.value = "";
   }
 
-  // Setup reminder notifications
-  setupReminderNotifications() {
-    const now = new Date();
-    const tripStart = new Date("2025-06-18");
+  // Render packing item
+  renderPackingItem(category, item) {
+    const container = document.getElementById(`${category}-list`);
+    if (!container) return;
 
-    // 7 days before trip
-    const sevenDaysBefore = new Date(tripStart);
-    sevenDaysBefore.setDate(sevenDaysBefore.getDate() - 7);
+    const itemElement = document.createElement("div");
+    itemElement.className = `packing-item ${item.packed ? "packed" : ""}`;
+    itemElement.innerHTML = `
+      <input type="checkbox" ${
+        item.packed ? "checked" : ""
+      } onchange="app.togglePackingItem('${category}', ${item.id})">
+      <span class="item-text">${item.text}</span>
+      <button class="remove-item" onclick="app.removePackingItem('${category}', ${
+      item.id
+    })">×</button>
+    `;
+    container.appendChild(itemElement);
+  }
 
-    if (now >= sevenDaysBefore && now < tripStart) {
-      TravelUtils.showNotification("🎒 Pack Soon!", {
-        body: "Your Morocco adventure starts in less than a week!",
-        icon: "🧳",
-      });
+  // Toggle packing item
+  togglePackingItem(category, itemId) {
+    const items = TravelUtils.loadFromStorage(`packing-${category}`, []);
+    const item = items.find((i) => i.id === itemId);
+    if (item) {
+      item.packed = !item.packed;
+      TravelUtils.saveToStorage(`packing-${category}`, items);
+      this.loadPackingList();
     }
+  }
 
-    // Day before trip
-    const dayBefore = new Date(tripStart);
-    dayBefore.setDate(dayBefore.getDate() - 1);
+  // Remove packing item
+  removePackingItem(category, itemId) {
+    const items = TravelUtils.loadFromStorage(`packing-${category}`, []);
+    const filteredItems = items.filter((i) => i.id !== itemId);
+    TravelUtils.saveToStorage(`packing-${category}`, filteredItems);
+    this.loadPackingList();
+  }
 
-    if (now.toDateString() === dayBefore.toDateString()) {
-      TravelUtils.showNotification("✈️ Tomorrow's the Day!", {
-        body: "Final preparations for your Morocco adventure!",
-        icon: "🎉",
-      });
-    }
+  // Add photo sharing (placeholder for future implementation)
+  addPhotoSharing() {
+    console.log("Photo sharing feature ready for implementation");
   }
 
   // Setup currency converter
@@ -582,6 +653,8 @@ class MoroccoAdventureApp {
     const convertBtn = document.getElementById("convertBtn");
     const amountInput = document.getElementById("amount");
 
+    if (!convertBtn || !amountInput) return;
+
     const convertCurrency = async () => {
       const amount = parseFloat(amountInput.value) || 0;
       const fromCurrency = document.getElementById("fromCurrency").value;
@@ -596,18 +669,29 @@ class MoroccoAdventureApp {
           fromCurrency,
           toCurrency
         );
-        document.getElementById(
-          "convertedAmount"
-        ).textContent = `${result} ${toCurrency}`;
-        document.getElementById(
-          "exchangeRateInfo"
-        ).textContent = `1 ${fromCurrency} = ${(result / amount).toFixed(
-          4
-        )} ${toCurrency}`;
+        const convertedAmountElement =
+          document.getElementById("convertedAmount");
+        const exchangeRateInfoElement =
+          document.getElementById("exchangeRateInfo");
+
+        if (convertedAmountElement) {
+          convertedAmountElement.textContent = `${result} ${toCurrency}`;
+        }
+        if (exchangeRateInfoElement) {
+          exchangeRateInfoElement.textContent = `1 ${fromCurrency} = ${(
+            result / amount
+          ).toFixed(4)} ${toCurrency}`;
+        }
       } catch (error) {
-        document.getElementById("convertedAmount").textContent = "Error";
-        document.getElementById("exchangeRateInfo").textContent =
-          "Rate unavailable";
+        const convertedAmountElement =
+          document.getElementById("convertedAmount");
+        const exchangeRateInfoElement =
+          document.getElementById("exchangeRateInfo");
+
+        if (convertedAmountElement)
+          convertedAmountElement.textContent = "Error";
+        if (exchangeRateInfoElement)
+          exchangeRateInfoElement.textContent = "Rate unavailable";
       } finally {
         convertBtn.textContent = "Convert";
       }
@@ -622,463 +706,14 @@ class MoroccoAdventureApp {
     setTimeout(convertCurrency, 1000);
   }
 
-  // Setup emergency info
+  // Setup emergency info (placeholder)
   setupEmergencyInfo() {
-    const emergencySection = document.createElement("section");
-    emergencySection.className = "emergency-section";
-    emergencySection.innerHTML = `
-      <h2 class="section-title">🚨 Emergency Information</h2>
-      <div class="emergency-grid">
-        <div class="emergency-card" onclick="app.toggleEmergencyDetails('police')">
-          <div class="emergency-icon">👮</div>
-          <h3>Police</h3>
-          <p class="emergency-number">19</p>
-        </div>
-        <div class="emergency-card" onclick="app.toggleEmergencyDetails('medical')">
-          <div class="emergency-icon">🚑</div>
-          <h3>Medical</h3>
-          <p class="emergency-number">15</p>
-        </div>
-        <div class="emergency-card" onclick="app.toggleEmergencyDetails('embassy')">
-          <div class="emergency-icon">🏛️</div>
-          <h3>Embassy</h3>
-          <p class="emergency-number">UK/US</p>
-        </div>
-        <div class="emergency-card" onclick="app.toggleEmergencyDetails('tourist')">
-          <div class="emergency-icon">ℹ️</div>
-          <h3>Tourist Police</h3>
-          <p class="emergency-number">+212 537...</p>
-        </div>
-      </div>
-      <div id="emergency-details" class="emergency-details hidden"></div>
-    `;
-
-    // Insert before alerts section
-    const alertsSection = document.querySelector(".alerts-section");
-    alertsSection.parentNode.insertBefore(emergencySection, alertsSection);
+    console.log("Emergency info feature ready");
   }
 
-  // Toggle emergency details
-  toggleEmergencyDetails(type) {
-    const detailsDiv = document.getElementById("emergency-details");
-    const emergencyInfo = TravelUtils.getEmergencyInfo();
-
-    let content = "";
-    switch (type) {
-      case "police":
-        content = `
-          <h4>🚔 Police Services</h4>
-          <p><strong>Emergency:</strong> ${emergencyInfo.morocco.police}</p>
-          <p><strong>Tourist Police:</strong> ${emergencyInfo.morocco.tourist_police}</p>
-        `;
-        break;
-      case "medical":
-        content = `
-          <h4>🏥 Medical Services</h4>
-          <p><strong>Ambulance:</strong> ${emergencyInfo.morocco.ambulance}</p>
-          <p><strong>Marrakech:</strong> ${emergencyInfo.hospitals.marrakech}</p>
-          <p><strong>Agadir:</strong> ${emergencyInfo.hospitals.agadir}</p>
-          <p><strong>Casablanca:</strong> ${emergencyInfo.hospitals.casablanca}</p>
-        `;
-        break;
-      case "embassy":
-        content = `
-          <h4>🏛️ Embassy Contacts</h4>
-          <p><strong>UK Embassy:</strong> ${emergencyInfo.embassies.uk}</p>
-          <p><strong>US Embassy:</strong> ${emergencyInfo.embassies.us}</p>
-        `;
-        break;
-      case "tourist":
-        content = `
-          <h4>ℹ️ Tourist Information</h4>
-          <p><strong>Tourist Police:</strong> ${emergencyInfo.morocco.tourist_police}</p>
-          <p>Available 24/7 for tourist assistance</p>
-        `;
-        break;
-    }
-
-    detailsDiv.innerHTML = content;
-    detailsDiv.classList.toggle("hidden");
-  }
-
-  // Setup language helper
+  // Setup language helper (placeholder)
   setupLanguageHelper() {
-    const phrases = TravelUtils.getLocalPhrases();
-
-    const languageSection = document.createElement("section");
-    languageSection.className = "language-section";
-    languageSection.innerHTML = `
-      <h2 class="section-title">🗣️ Language Helper</h2>
-      <div class="language-tabs">
-        <button class="language-tab active" onclick="app.switchLanguage('arabic')">العربية Arabic</button>
-        <button class="language-tab" onclick="app.switchLanguage('french')">Français French</button>
-      </div>
-      <div id="phrases-container" class="phrases-container">
-        ${this.generatePhrasesHTML(phrases.arabic)}
-      </div>
-    `;
-
-    // Insert before Omar departure section
-    const omarSection = document.querySelector(".omar-section");
-    omarSection.parentNode.insertBefore(languageSection, omarSection);
-  }
-
-  // Generate phrases HTML
-  generatePhrasesHTML(phrases) {
-    return Object.entries(phrases)
-      .map(
-        ([key, phrase]) => `
-      <div class="phrase-item">
-        <div class="phrase-english">${
-          key.charAt(0).toUpperCase() + key.slice(1)
-        }</div>
-        <div class="phrase-translation">${phrase}</div>
-        <button class="phrase-play" onclick="app.playPhrase('${phrase
-          .split("(")[0]
-          .trim()}')">🔊</button>
-      </div>
-    `
-      )
-      .join("");
-  }
-
-  // Switch language in helper
-  switchLanguage(language) {
-    const phrases = TravelUtils.getLocalPhrases();
-    const container = document.getElementById("phrases-container");
-    const tabs = document.querySelectorAll(".language-tab");
-
-    // Update active tab
-    tabs.forEach((tab) => tab.classList.remove("active"));
-    document
-      .querySelector(`[onclick="app.switchLanguage('${language}')"]`)
-      .classList.add("active");
-
-    // Update phrases
-    container.innerHTML = this.generatePhrasesHTML(phrases[language]);
-  }
-
-  // Play phrase using speech synthesis
-  playPhrase(text) {
-    if ("speechSynthesis" in window) {
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = "ar"; // Arabic
-      speechSynthesis.speak(utterance);
-    }
-  }
-
-  // Load collaboration features
-  loadCollaborationFeatures() {
-    // Add collaborative notes
-    this.addCollaborativeNotes();
-
-    // Add shared packing list
-    this.addSharedPackingList();
-
-    // Add photo sharing
-    this.addPhotoSharing();
-  }
-
-  // Add collaborative notes
-  addCollaborativeNotes() {
-    const notesSection = document.createElement("section");
-    notesSection.className = "notes-section";
-    notesSection.innerHTML = `
-      <h2 class="section-title">📝 Shared Notes</h2>
-      <div class="notes-container">
-        <textarea id="shared-notes" placeholder="Add shared notes, ideas, or reminders here..."></textarea>
-        <div class="notes-actions">
-          <button onclick="app.saveNotes()" class="save-notes-btn">💾 Save Notes</button>
-          <button onclick="app.exportNotes()" class="export-notes-btn">📄 Export</button>
-        </div>
-        <div class="notes-info">
-          <p>Last updated: <span id="notes-timestamp">Never</span></p>
-        </div>
-      </div>
-    `;
-
-    // Insert before alerts
-    const alertsSection = document.querySelector(".alerts-section");
-    alertsSection.parentNode.insertBefore(notesSection, alertsSection);
-
-    // Load saved notes
-    this.loadSavedNotes();
-  }
-
-  // Load saved notes
-  loadSavedNotes() {
-    const savedNotes = TravelUtils.loadFromStorage("shared-notes", "");
-    const timestamp = TravelUtils.loadFromStorage("notes-timestamp", "Never");
-
-    document.getElementById("shared-notes").value = savedNotes;
-    document.getElementById("notes-timestamp").textContent = timestamp;
-  }
-
-  // Save notes
-  saveNotes() {
-    const notes = document.getElementById("shared-notes").value;
-    const timestamp = new Date().toLocaleString();
-
-    TravelUtils.saveToStorage("shared-notes", notes);
-    TravelUtils.saveToStorage("notes-timestamp", timestamp);
-
-    document.getElementById("notes-timestamp").textContent = timestamp;
-
-    TravelUtils.showNotification("Notes Saved", {
-      body: "Your shared notes have been saved locally",
-      icon: "📝",
-    });
-  }
-
-  // Export notes
-  exportNotes() {
-    const notes = document.getElementById("shared-notes").value;
-    const blob = new Blob([notes], { type: "text/plain" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "morocco-adventure-notes.txt";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  }
-
-  // Add shared packing list
-  addSharedPackingList() {
-    const packingSection = document.createElement("section");
-    packingSection.className = "packing-section";
-    packingSection.innerHTML = `
-      <h2 class="section-title">🎒 Shared Packing List</h2>
-      <div class="packing-container">
-        <div class="packing-categories">
-          <div class="packing-category">
-            <h3>👕 Clothing</h3>
-            <div id="clothing-list" class="packing-list"></div>
-            <div class="add-item">
-              <input type="text" id="clothing-input" placeholder="Add clothing item...">
-              <button onclick="app.addPackingItem('clothing')">Add</button>
-            </div>
-          </div>
-          <div class="packing-category">
-            <h3>🧴 Toiletries</h3>
-            <div id="toiletries-list" class="packing-list"></div>
-            <div class="add-item">
-              <input type="text" id="toiletries-input" placeholder="Add toiletry item...">
-              <button onclick="app.addPackingItem('toiletries')">Add</button>
-            </div>
-          </div>
-          <div class="packing-category">
-            <h3>📱 Electronics</h3>
-            <div id="electronics-list" class="packing-list"></div>
-            <div class="add-item">
-              <input type="text" id="electronics-input" placeholder="Add electronic item...">
-              <button onclick="app.addPackingItem('electronics')">Add</button>
-            </div>
-          </div>
-          <div class="packing-category">
-            <h3>📋 Other</h3>
-            <div id="other-list" class="packing-list"></div>
-            <div class="add-item">
-              <input type="text" id="other-input" placeholder="Add other item...">
-              <button onclick="app.addPackingItem('other')">Add</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    `;
-
-    // Insert before language section
-    const languageSection = document.querySelector(".language-section");
-    languageSection.parentNode.insertBefore(packingSection, languageSection);
-
-    // Load saved packing list
-    this.loadPackingList();
-  }
-
-  // Load packing list from storage
-  loadPackingList() {
-    const categories = ["clothing", "toiletries", "electronics", "other"];
-    categories.forEach((category) => {
-      const items = TravelUtils.loadFromStorage(`packing-${category}`, []);
-      const container = document.getElementById(`${category}-list`);
-      container.innerHTML = "";
-      items.forEach((item) => this.renderPackingItem(category, item));
-    });
-  }
-
-  // Add packing item
-  addPackingItem(category) {
-    const input = document.getElementById(`${category}-input`);
-    const itemText = input.value.trim();
-    if (!itemText) return;
-
-    const item = {
-      id: Date.now(),
-      text: itemText,
-      packed: false,
-      addedBy: "User",
-    };
-
-    // Save to storage
-    const items = TravelUtils.loadFromStorage(`packing-${category}`, []);
-    items.push(item);
-    TravelUtils.saveToStorage(`packing-${category}`, items);
-
-    // Render item
-    this.renderPackingItem(category, item);
-
-    // Clear input
-    input.value = "";
-  }
-
-  // Render packing item
-  renderPackingItem(category, item) {
-    const container = document.getElementById(`${category}-list`);
-    const itemElement = document.createElement("div");
-    itemElement.className = `packing-item ${item.packed ? "packed" : ""}`;
-    itemElement.innerHTML = `
-      <input type="checkbox" ${
-        item.packed ? "checked" : ""
-      } onchange="app.togglePackingItem('${category}', ${item.id})">
-      <span class="item-text">${item.text}</span>
-      <button class="remove-item" onclick="app.removePackingItem('${category}', ${
-      item.id
-    })">×</button>
-    `;
-    container.appendChild(itemElement);
-  }
-
-  // Toggle packing item
-  togglePackingItem(category, itemId) {
-    const items = TravelUtils.loadFromStorage(`packing-${category}`, []);
-    const item = items.find((i) => i.id === itemId);
-    if (item) {
-      item.packed = !item.packed;
-      TravelUtils.saveToStorage(`packing-${category}`, items);
-      this.loadPackingList();
-    }
-  }
-
-  // Remove packing item
-  removePackingItem(category, itemId) {
-    const items = TravelUtils.loadFromStorage(`packing-${category}`, []);
-    const filteredItems = items.filter((i) => i.id !== itemId);
-    TravelUtils.saveToStorage(`packing-${category}`, filteredItems);
-    this.loadPackingList();
-  }
-
-  // Add photo sharing
-  addPhotoSharing() {
-    const photoSection = document.createElement("section");
-    photoSection.className = "photo-section";
-    photoSection.innerHTML = `
-      <h2 class="section-title">📸 Trip Photos</h2>
-      <div class="photo-container">
-        <div class="photo-upload">
-          <input type="file" id="photo-input" accept="image/*" multiple style="display: none;">
-          <button onclick="document.getElementById('photo-input').click()" class="upload-btn">
-            📷 Add Photos
-          </button>
-        </div>
-        <div id="photo-gallery" class="photo-gallery"></div>
-      </div>
-    `;
-
-    // Insert before notes section
-    const notesSection = document.querySelector(".notes-section");
-    notesSection.parentNode.insertBefore(photoSection, notesSection);
-
-    // Setup photo upload
-    this.setupPhotoUpload();
-  }
-
-  // Setup photo upload
-  setupPhotoUpload() {
-    const photoInput = document.getElementById("photo-input");
-    photoInput.addEventListener("change", (e) => {
-      const files = Array.from(e.target.files);
-      files.forEach((file) => this.processPhoto(file));
-    });
-
-    // Load existing photos
-    this.loadPhotos();
-  }
-
-  // Process uploaded photo
-  processPhoto(file) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const photo = {
-        id: Date.now() + Math.random(),
-        src: e.target.result,
-        name: file.name,
-        timestamp: new Date().toISOString(),
-      };
-
-      // Save to storage
-      const photos = TravelUtils.loadFromStorage("trip-photos", []);
-      photos.push(photo);
-      TravelUtils.saveToStorage("trip-photos", photos);
-
-      // Render photo
-      this.renderPhoto(photo);
-    };
-    reader.readAsDataURL(file);
-  }
-
-  // Load photos from storage
-  loadPhotos() {
-    const photos = TravelUtils.loadFromStorage("trip-photos", []);
-    const gallery = document.getElementById("photo-gallery");
-    gallery.innerHTML = "";
-    photos.forEach((photo) => this.renderPhoto(photo));
-  }
-
-  // Render photo in gallery
-  renderPhoto(photo) {
-    const gallery = document.getElementById("photo-gallery");
-    const photoElement = document.createElement("div");
-    photoElement.className = "photo-item";
-    photoElement.innerHTML = `
-      <img src="${photo.src}" alt="${photo.name}" onclick="app.showPhotoModal('${photo.id}')">
-      <div class="photo-info">
-        <span class="photo-name">${photo.name}</span>
-        <button class="delete-photo" onclick="app.deletePhoto('${photo.id}')">🗑️</button>
-      </div>
-    `;
-    gallery.appendChild(photoElement);
-  }
-
-  // Show photo in modal
-  showPhotoModal(photoId) {
-    const photos = TravelUtils.loadFromStorage("trip-photos", []);
-    const photo = photos.find((p) => p.id == photoId);
-    if (!photo) return;
-
-    const modal = document.createElement("div");
-    modal.className = "photo-modal";
-    modal.innerHTML = `
-      <div class="photo-modal-content">
-        <button class="photo-modal-close" onclick="this.parentElement.parentElement.remove()">×</button>
-        <img src="${photo.src}" alt="${photo.name}">
-        <div class="photo-modal-info">
-          <h3>${photo.name}</h3>
-          <p>Added: ${new Date(photo.timestamp).toLocaleString()}</p>
-        </div>
-      </div>
-    `;
-    document.body.appendChild(modal);
-  }
-
-  // Delete photo
-  deletePhoto(photoId) {
-    if (!confirm("Delete this photo?")) return;
-
-    const photos = TravelUtils.loadFromStorage("trip-photos", []);
-    const filteredPhotos = photos.filter((p) => p.id != photoId);
-    TravelUtils.saveToStorage("trip-photos", filteredPhotos);
-    this.loadPhotos();
+    console.log("Language helper feature ready");
   }
 
   // Start real-time updates
@@ -1099,45 +734,15 @@ class MoroccoAdventureApp {
         await this.loadWeatherData();
       }
 
-      // Update time displays
-      this.updateTimeDisplays();
-
-      // Update trip progress
-      this.updateTripProgress();
+      // Update countdowns
+      this.updateCountdowns();
     } catch (error) {
       console.error("Error updating real-time data:", error);
     }
   }
 
-  // Update time displays
-  updateTimeDisplays() {
-    const timeElements = document.querySelectorAll(".timezone-display");
-    timeElements.forEach((element) => {
-      element.innerHTML = `🕐 Local time: ${TravelUtils.getCurrentTimeInTimezone(
-        "Africa/Casablanca"
-      )}`;
-    });
-  }
-
-  // Update trip progress
-  updateTripProgress() {
-    const progress = TravelUtils.calculateTripProgress();
-
-    // Update progress indicators if they exist
-    const progressElements = document.querySelectorAll(".trip-progress");
-    progressElements.forEach((element) => {
-      element.textContent = `${progress.progress}% complete`;
-    });
-  }
-
   // Setup event listeners
   setupEventListeners() {
-    // Route calculation listener
-    window.addEventListener("routeCalculated", (event) => {
-      console.log("Route calculated:", event.detail);
-      // Update UI with route information
-    });
-
     // Keyboard shortcuts
     document.addEventListener("keydown", (e) => {
       if (e.ctrlKey || e.metaKey) {
@@ -1148,13 +753,15 @@ class MoroccoAdventureApp {
             break;
           case "m":
             e.preventDefault();
-            this.mapsService?.openInGoogleMaps();
+            if (this.mapsService?.openInGoogleMaps) {
+              this.mapsService.openInGoogleMaps();
+            }
             break;
         }
       }
     });
 
-    // Scroll animations
+    // Setup scroll animations
     this.setupScrollAnimations();
   }
 
@@ -1173,28 +780,23 @@ class MoroccoAdventureApp {
       });
     }, observerOptions);
 
-    // Observe new sections
-    document
-      .querySelectorAll(
-        ".weather-dashboard, .countdown-section, .currency-converter-section"
-      )
-      .forEach((section) => {
-        observer.observe(section);
-      });
+    // Observe sections for animations
+    setTimeout(() => {
+      document
+        .querySelectorAll("section, .day-card, .stat-card")
+        .forEach((section) => {
+          observer.observe(section);
+        });
+    }, 1000);
   }
 
   // Initialize PWA features
   initializePWA() {
     // Register service worker
     if ("serviceWorker" in navigator) {
-      navigator.serviceWorker
-        .register("/sw.js")
-        .then((registration) => {
-          console.log("Service Worker registered:", registration);
-        })
-        .catch((error) => {
-          console.error("Service Worker registration failed:", error);
-        });
+      navigator.serviceWorker.register("/sw.js").catch((error) => {
+        console.log("Service Worker not available:", error);
+      });
     }
 
     // Add to home screen prompt
@@ -1232,44 +834,6 @@ class MoroccoAdventureApp {
       const banner = document.querySelector(".install-banner");
       if (banner) banner.remove();
     }
-  }
-
-  // Setup network detection
-  setupNetworkDetection() {
-    const updateOnlineStatus = () => {
-      const statusIndicator = document.createElement("div");
-      statusIndicator.className = `network-status ${
-        navigator.onLine ? "online" : "offline"
-      }`;
-      statusIndicator.innerHTML = navigator.onLine ? "🟢 Online" : "🔴 Offline";
-
-      // Remove existing indicator
-      const existing = document.querySelector(".network-status");
-      if (existing) existing.remove();
-
-      // Add new indicator
-      document.body.appendChild(statusIndicator);
-
-      // Auto-remove online indicator after 3 seconds
-      if (navigator.onLine) {
-        setTimeout(() => statusIndicator.remove(), 3000);
-      }
-    };
-
-    window.addEventListener("online", updateOnlineStatus);
-    window.addEventListener("offline", updateOnlineStatus);
-  }
-
-  // Load travel updates
-  loadTravelUpdates() {
-    // This would integrate with travel APIs for real-time updates
-    console.log("Travel updates feature ready");
-  }
-
-  // Load smart recommendations
-  loadSmartRecommendations() {
-    // This would provide AI-powered recommendations
-    console.log("Smart recommendations feature ready");
   }
 
   // Hide loading screen
