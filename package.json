@@ -1,0 +1,41 @@
+{
+  "name": "morocco-adventure-2025",
+  "version": "1.0.0",
+  "description": "Ultimate Travel Dashboard for Denis & Omar's Morocco Adventure",
+  "main": "index.html",
+  "scripts": {
+    "dev": "python3 start-server.py",
+    "start": "python3 start-server.py",
+    "build": "node inject-env.js",
+    "preview": "python3 -m http.server 8000",
+    "deploy": "vercel --prod"
+  },
+  "keywords": [
+    "travel",
+    "morocco",
+    "dashboard",
+    "pwa",
+    "adventure",
+    "itinerary"
+  ],
+  "author": "Denis & Omar",
+  "license": "MIT",
+  "homepage": "https://morocco-adventure-2025.vercel.app",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/YOUR_USERNAME/morocco-adventure-2025.git"
+  },
+  "engines": {
+    "node": ">=14.0.0",
+    "python": ">=3.7.0"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead",
+    "iOS >= 12",
+    "Android >= 6"
+  ]
+}

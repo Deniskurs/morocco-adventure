@@ -1,0 +1,450 @@
+// Trip Data Management
+const TripData = {
+  trip: {
+    title: "Morocco Adventure 2025",
+    subtitle: "June 18 - July 20 • Denis & Omar's Epic Journey",
+    totalDays: 33,
+    cities: 8,
+    workDays: 14,
+    estimatedCost: "£300+",
+  },
+
+  locations: [
+    {
+      name: "Ouarzazate",
+      emoji: "✈️",
+      coordinates: { lat: 30.9335, lng: -6.937 },
+      description: "Gateway to the Sahara",
+    },
+    {
+      name: "Marrakesh",
+      emoji: "",
+      coordinates: { lat: 31.6295, lng: -7.9811 },
+      description: "The Red City",
+    },
+    {
+      name: "Sahara",
+      emoji: "🐪",
+      coordinates: { lat: 31.0801, lng: -4.0077 },
+      description: "Desert Experience",
+    },
+    {
+      name: "Agafay",
+      emoji: "⛺",
+      coordinates: { lat: 31.4018, lng: -8.116 },
+      description: "Stone Desert",
+    },
+    {
+      name: "Agadir",
+      emoji: "🏖️",
+      coordinates: { lat: 30.4278, lng: -9.5981 },
+      description: "Atlantic Coast",
+    },
+    {
+      name: "Casablanca",
+      emoji: "",
+      coordinates: { lat: 33.5731, lng: -7.5898 },
+      description: "Economic Capital",
+    },
+    {
+      name: "Kenitra",
+      emoji: "",
+      coordinates: { lat: 34.261, lng: -6.5802 },
+      description: "Family Time",
+    },
+    {
+      name: "Tangier",
+      emoji: "✈️",
+      coordinates: { lat: 35.7595, lng: -5.834 },
+      description: "Departure Point",
+    },
+  ],
+
+  itinerary: [
+    {
+      day: 1,
+      date: "Wednesday, June 18",
+      location: "Ouarzazate",
+      emoji: "✈️",
+      title: "Arrival in Ouarzazate",
+      accommodation: {
+        name: "Appartement City Center",
+        bookingRef: "544934835",
+        cost: "€20.00",
+        status: "confirmed",
+      },
+      tags: ["Arrival Day", "Settle In"],
+      tagTypes: ["travel", "activity"],
+      details: null,
+      urgent: false,
+    },
+    {
+      day: 2,
+      date: "Thursday, June 19",
+      location: "Ouarzazate → Marrakesh",
+      emoji: "",
+      title: "Ouarzazate → Marrakesh",
+      accommodation: {
+        name: "Riad La Porte Rouge By La Siredrah",
+        bookingRef: "6150557377",
+        cost: "€49.16 paid",
+        status: "confirmed",
+      },
+      tags: ["Morning Work", "Evening Bus (4-5h)"],
+      tagTypes: ["work", "travel"],
+      details: null,
+      urgent: false,
+    },
+    {
+      day: 3,
+      date: "Friday, June 20",
+      location: "Desert Tour Day 1",
+      emoji: "🚐",
+      title: "Desert Tour Day 1",
+      accommodation: {
+        name: "Marrakech → Tinghir via Atlas Mountains",
+        bookingRef: "1269257223",
+        cost: "Pickup: 7:00 AM",
+        status: "confirmed",
+      },
+      tags: ["Ait Benhaddou", "Rose Valley", "Hotel Tinghir"],
+      tagTypes: ["desert", "desert", "activity"],
+      details: [
+        "• 7:00 AM pickup from Riad La Porte Rouge",
+        "• Cross Tizi-n-Tichka Atlas pass",
+        "• Visit UNESCO site Ait Benhaddou (lunch)",
+        "• Continue through Rose Valley",
+        "• Overnight in Tinghir hotel with dinner",
+      ],
+      urgent: false,
+    },
+    {
+      day: 4,
+      date: "Saturday, June 21",
+      location: "Desert Tour Day 2",
+      emoji: "🐪",
+      title: "Desert Tour Day 2",
+      accommodation: {
+        name: "Tinghir → Merzouga Sahara",
+        bookingRef: "Erg Chebbi Dunes",
+        cost: "Desert Camp",
+        status: "confirmed",
+      },
+      tags: ["Todra Gorges", "Camel Sunset", "Berber Camp"],
+      tagTypes: ["desert", "desert", "special"],
+      details: [
+        "• Morning: Drive through Todra Gorges",
+        "• Leave main luggage at Merzouga hotel",
+        "• Afternoon: Camel ride into dunes",
+        "• Sandboarding on highest dunes",
+        "• Night: Desert camp with drums music",
+      ],
+      urgent: false,
+    },
+    {
+      day: 5,
+      date: "Sunday, June 22",
+      location: "Desert Tour Day 3",
+      emoji: "🌅",
+      title: "Desert Tour Day 3",
+      accommodation: {
+        name: "Merzouga → Marrakesh",
+        bookingRef: "Arrival: ~7:30 PM",
+        cost: "",
+        status: "needs_booking",
+      },
+      tags: ["Sunrise Dunes", "Return Journey", "Need Hotel!"],
+      tagTypes: ["desert", "travel", "special"],
+      details: null,
+      urgent: true,
+      alert: "NEED ACCOMMODATION: Sunday night in Marrakesh (hostel cancelled)",
+    },
+    {
+      day: 6,
+      date: "Monday, June 23",
+      location: "Agafay Desert Experience",
+      emoji: "⛺",
+      title: "Agafay Desert Experience",
+      accommodation: {
+        name: "Overnight Desert Camp with Show",
+        bookingRef: "1269263275",
+        cost: "Pickup: 4:00 PM",
+        status: "confirmed",
+      },
+      tags: ["Morning Work", "Pool Access", "Fire Show"],
+      tagTypes: ["work", "special", "desert"],
+      details: [
+        "• Work until 3:30 PM",
+        "• 4:00 PM pickup from accommodation",
+        "• Welcome tea at desert camp",
+        "• Optional: Quad/camel ride (extra cost)",
+        "• Dinner: Tagine, couscous, dessert",
+        "• Entertainment: Belly dancing, fire show, gnawa music",
+        "• Overnight in private deluxe tent",
+        "• Pool access included",
+      ],
+      highlight: true,
+      urgent: false,
+    },
+    {
+      day: 7,
+      date: "Tuesday, June 24",
+      location: "Agafay → Marrakesh → Agadir",
+      emoji: "",
+      title: "Agafay → Marrakesh → Agadir",
+      accommodation: {
+        name: "Sud Bahia Agadir Hotel",
+        bookingRef: "544955779",
+        cost: "9 nights • £191.85",
+        status: "confirmed",
+      },
+      tags: ["Morning Return", "Explore Marrakesh", "PM Bus to Agadir"],
+      tagTypes: ["activity", "activity", "travel"],
+      details: null,
+      urgent: false,
+    },
+    {
+      day: "8-16",
+      date: "June 25 - July 3",
+      location: "Agadir Beach Life",
+      emoji: "🏖️",
+      title: "Agadir Beach Life",
+      accommodation: {
+        name: 'Sud Bahia Agadir "Bahia City Hotel"',
+        bookingRef: "Main work base",
+        cost: "High floor, quiet room",
+        status: "confirmed",
+      },
+      tags: ["7-8 Work Days", "Beach", "Surfing"],
+      tagTypes: ["work", "activity", "activity"],
+      details: null,
+      urgent: false,
+    },
+    {
+      day: 17,
+      date: "Thursday-Friday, July 3-4",
+      location: "Casablanca",
+      emoji: "",
+      title: "Casablanca",
+      accommodation: {
+        name: "Hotel Majestic",
+        bookingRef: "73128204416257",
+        cost: "£31.34",
+        status: "confirmed",
+      },
+      tags: ["Thu PM arrival", "🕌 Friday Jummah", "Fri PM to Kenitra"],
+      tagTypes: ["travel", "special", "travel"],
+      details: null,
+      urgent: false,
+    },
+    {
+      day: "18-24",
+      date: "July 4-11",
+      location: "Kenitra",
+      emoji: "",
+      title: "Kenitra",
+      accommodation: {
+        name: "👵 Omar's Grandma's House",
+        bookingRef: "Family hosting",
+        cost: "FREE accommodation",
+        status: "confirmed",
+      },
+      tags: ["Family Time", "3-4 Work Days", "Local Life"],
+      tagTypes: ["special", "work", "activity"],
+      details: null,
+      urgent: false,
+    },
+  ],
+
+  costs: [
+    {
+      item: "Ouarzazate - Appartement City Center",
+      amount: "€20.00",
+      status: "paid",
+    },
+    {
+      item: "Marrakesh - Riad La Porte Rouge",
+      amount: "€49.16",
+      status: "paid",
+    },
+    {
+      item: "Marrakesh - Red Vibes Hostel (CANCELLING)",
+      amount: "£26.12",
+      status: "cancelling",
+    },
+    {
+      item: "Marrakesh - Sunday Night (NEEDED)",
+      amount: "TBD",
+      status: "needed",
+    },
+    { item: "Agafay Desert Experience", amount: "TBD", status: "pending" },
+    {
+      item: "Agadir - Sud Bahia Hotel (9 nights)",
+      amount: "£191.85",
+      status: "paid",
+    },
+    { item: "Casablanca - Hotel Majestic", amount: "£31.34", status: "paid" },
+    { item: "Kenitra - Omar's Grandma", amount: "FREE", status: "confirmed" },
+  ],
+
+  transport: [
+    {
+      date: "June 19 Evening",
+      route: "Ouarzazate → Marrakesh",
+      type: "Bus",
+      icon: "🚌",
+      details: "CTM/Supratours bus (4-5 hours) - Need to book",
+      status: "pending",
+      booked: false,
+    },
+    {
+      date: "June 20-22",
+      route: "Desert Tour Transport",
+      type: "Tour Van",
+      icon: "🚐",
+      details: "Pickup 7:00 AM from Riad",
+      status: "confirmed",
+      booked: true,
+    },
+    {
+      date: "June 23",
+      route: "Agafay Desert Transport",
+      type: "Tour Van",
+      icon: "🚐",
+      details: "Pickup 4:00 PM • Return June 24 AM",
+      status: "confirmed",
+      booked: true,
+    },
+    {
+      date: "June 24 Afternoon",
+      route: "Marrakesh → Agadir",
+      type: "Bus",
+      icon: "🚌",
+      details: "After desert return - Bus/train (3 hours)",
+      status: "pending",
+      booked: false,
+    },
+    {
+      date: "July 3 Afternoon",
+      route: "Agadir → Casablanca",
+      type: "Bus",
+      icon: "🚌",
+      details: "CTM bus (5-6 hours) - Book in advance",
+      status: "pending",
+      booked: false,
+    },
+    {
+      date: "July 4 Evening",
+      route: "Casablanca → Kenitra",
+      type: "Train",
+      icon: "🚂",
+      details: "Train via Rabat (1 hour) - After Jummah",
+      status: "pending",
+      booked: false,
+    },
+    {
+      date: "July 11",
+      route: "Kenitra → Tangier Airport",
+      type: "Fast Train",
+      icon: "🚄",
+      details: "Fast train available - Omar's NYC flight booked",
+      status: "confirmed",
+      booked: true,
+    },
+  ],
+
+  workSchedule: [
+    {
+      date: "June 19",
+      location: "Ouarzazate",
+      duration: "0.5 days",
+      details: "morning",
+    },
+    {
+      date: "June 23",
+      location: "Marrakesh",
+      duration: "0.5 days",
+      details: "until 3:30 PM",
+    },
+    {
+      date: "June 25 - July 2",
+      location: "Agadir",
+      duration: "7-8 days",
+      details: "stretch",
+    },
+    {
+      date: "July 3",
+      location: "Agadir",
+      duration: "0.5 days",
+      details: "morning",
+    },
+    {
+      date: "July 7-10",
+      location: "Kenitra",
+      duration: "3-4 days",
+      details: "",
+    },
+    {
+      date: "Bus journeys",
+      location: "Various",
+      duration: "1-2 days",
+      details: "With 5G router",
+    },
+  ],
+
+  alerts: [
+    {
+      type: "urgent",
+      title: "Sunday Night Accommodation",
+      description: "Need hotel in Marrakesh for June 22 (after desert return)",
+      priority: "high",
+    },
+    {
+      type: "urgent",
+      title: "Hostel Cancellation",
+      description: "Confirm Red Vibes Hostel cancellation status",
+      priority: "medium",
+    },
+    {
+      type: "urgent",
+      title: "Bus Tickets",
+      description:
+        "Book Ouarzazate→Marrakesh (June 19) and Marrakesh→Agadir (June 24)",
+      priority: "high",
+    },
+    {
+      type: "urgent",
+      title: "Agafay Desert Payment",
+      description: "Confirm total cost for booking #1269263275",
+      priority: "medium",
+    },
+  ],
+
+  omarDeparture: {
+    date: "Friday, July 11, 2025",
+    flight: "Tangier Airport → New York City",
+    transport: "Fast train from Kenitra to Tangier Airport",
+    departure: "Early morning for international flight",
+    status: "NYC tickets already booked!",
+    denisPlans:
+      "Denis continues solo: July 11-20! 9 days to explore Fes, Chefchaouen, Tangier, or discover new adventures",
+  },
+};
+
+// API Keys (Production uses environment variables, fallback to hardcoded for local development)
+const API_KEYS = {
+  GOOGLE_MAPS:
+    typeof window !== "undefined" && window.location.hostname !== "localhost"
+      ? window.NEXT_PUBLIC_GOOGLE_MAPS_API ||
+        "AIzaSyDkzk56s1ckzP9PTJuwrljKjm3lf0wTdKk"
+      : "AIzaSyDkzk56s1ckzP9PTJuwrljKjm3lf0wTdKk",
+  OPENWEATHER:
+    typeof window !== "undefined" && window.location.hostname !== "localhost"
+      ? window.NEXT_PUBLIC_OPENWEATHER_API || "1afe1e1e1631043e38006919de2c1b3b"
+      : "1afe1e1e1631043e38006919de2c1b3b",
+};
+
+// Export for use in other modules
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = { TripData, API_KEYS };
+}

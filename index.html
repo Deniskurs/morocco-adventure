@@ -1,0 +1,1261 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Morocco Adventure 2025 - Ultimate Travel Dashboard</title>
+
+    <!-- Enhanced Styles -->
+    <link rel="stylesheet" href="assets/css/enhanced.css" />
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json" />
+    <meta name="theme-color" content="#ff6b6b" />
+
+    <!-- Favicon and App Icons -->
+    <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico" />
+    <link rel="apple-touch-icon" href="assets/images/icon-192.png" />
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --primary: #ff6b6b;
+        --secondary: #4ecdc4;
+        --accent: #ffe66d;
+        --dark: #2d3436;
+        --light: #dfe6e9;
+        --success: #00b894;
+        --warning: #fdcb6e;
+        --danger: #d63031;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        background: #000;
+        color: #fff;
+        overflow-x: hidden;
+        position: relative;
+      }
+
+      /* Animated Background */
+      .bg-animation {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        background: linear-gradient(45deg, #000428 0%, #004e92 100%);
+        overflow: hidden;
+      }
+
+      .stars {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background-image: radial-gradient(
+            2px 2px at 20% 30%,
+            white,
+            transparent
+          ),
+          radial-gradient(2px 2px at 60% 70%, white, transparent),
+          radial-gradient(1px 1px at 50% 50%, white, transparent);
+        background-size: 200px 200px;
+        animation: twinkle 10s infinite;
+      }
+
+      @keyframes twinkle {
+        0%,
+        100% {
+          opacity: 0;
+        }
+        50% {
+          opacity: 1;
+        }
+      }
+
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px;
+        position: relative;
+        z-index: 1;
+      }
+
+      /* Header Section */
+      .header {
+        text-align: center;
+        padding: 60px 0 40px;
+        position: relative;
+      }
+
+      .title {
+        font-size: 4em;
+        font-weight: 900;
+        background: linear-gradient(
+          135deg,
+          #ff6b6b 0%,
+          #4ecdc4 50%,
+          #ffe66d 100%
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 20px;
+        animation: glow 3s ease-in-out infinite alternate;
+      }
+
+      @keyframes glow {
+        from {
+          filter: drop-shadow(0 0 20px rgba(255, 107, 107, 0.5));
+        }
+        to {
+          filter: drop-shadow(0 0 30px rgba(78, 205, 196, 0.8));
+        }
+      }
+
+      .subtitle {
+        font-size: 1.5em;
+        color: #b2bec3;
+        margin-bottom: 40px;
+      }
+
+      /* Alert Banner */
+      .alert-banner {
+        background: linear-gradient(135deg, #d63031 0%, #ff7675 100%);
+        color: white;
+        padding: 20px;
+        border-radius: 20px;
+        margin-bottom: 40px;
+        text-align: center;
+        font-weight: bold;
+        animation: pulse 2s infinite;
+        box-shadow: 0 10px 30px rgba(214, 48, 49, 0.3);
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.02);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      /* Stats Cards */
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-bottom: 50px;
+      }
+
+      .stat-card {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        padding: 30px;
+        text-align: center;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .stat-card:hover {
+        transform: translateY(-10px) scale(1.05);
+        background: rgba(255, 255, 255, 0.15);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      }
+
+      .stat-card::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(
+          45deg,
+          transparent,
+          rgba(255, 255, 255, 0.1),
+          transparent
+        );
+        transform: rotate(45deg);
+        transition: all 0.5s;
+        opacity: 0;
+      }
+
+      .stat-card:hover::before {
+        animation: shine 0.5s ease-in-out;
+      }
+
+      @keyframes shine {
+        0% {
+          transform: translateX(-100%) translateY(-100%) rotate(45deg);
+          opacity: 0;
+        }
+        50% {
+          opacity: 1;
+        }
+        100% {
+          transform: translateX(100%) translateY(100%) rotate(45deg);
+          opacity: 0;
+        }
+      }
+
+      .stat-value {
+        font-size: 3em;
+        font-weight: bold;
+        background: linear-gradient(135deg, #ff6b6b 0%, #4ecdc4 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 10px;
+      }
+
+      .stat-label {
+        color: #b2bec3;
+        font-size: 1.1em;
+      }
+
+      /* Journey Timeline */
+      .journey-section {
+        margin: 50px 0;
+      }
+
+      .section-title {
+        font-size: 2.5em;
+        font-weight: bold;
+        margin-bottom: 30px;
+        text-align: center;
+        color: #4ecdc4;
+      }
+
+      .timeline {
+        position: relative;
+        padding: 20px 0;
+      }
+
+      .timeline-line {
+        position: absolute;
+        left: 30px;
+        top: 0;
+        bottom: 0;
+        width: 4px;
+        background: linear-gradient(
+          180deg,
+          #ff6b6b 0%,
+          #4ecdc4 50%,
+          #ffe66d 100%
+        );
+        border-radius: 2px;
+      }
+
+      .day-card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        padding: 25px;
+        margin-bottom: 20px;
+        margin-left: 70px;
+        position: relative;
+        transition: all 0.3s ease;
+        cursor: pointer;
+      }
+
+      .day-card:hover {
+        transform: translateX(10px);
+        background: rgba(255, 255, 255, 0.1);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      }
+
+      .day-number {
+        position: absolute;
+        left: -55px;
+        top: 25px;
+        width: 40px;
+        height: 40px;
+        background: #ff6b6b;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 1.2em;
+        box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+      }
+
+      .day-card.highlight .day-number {
+        background: #ffe66d;
+        color: #000;
+        animation: bounce 1s infinite;
+      }
+
+      @keyframes bounce {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.2);
+        }
+      }
+
+      .day-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+      }
+
+      .date-info {
+        font-size: 1.3em;
+        font-weight: bold;
+        color: #fff;
+      }
+
+      .location-name {
+        font-size: 1.5em;
+        font-weight: bold;
+        color: #4ecdc4;
+        margin-bottom: 10px;
+      }
+
+      .accommodation-info {
+        background: rgba(0, 0, 0, 0.3);
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 15px;
+      }
+
+      .accommodation-name {
+        font-weight: bold;
+        color: #ffe66d;
+        margin-bottom: 5px;
+      }
+
+      .booking-ref {
+        font-size: 0.85em;
+        color: #b2bec3;
+        font-family: monospace;
+      }
+
+      .tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 15px;
+      }
+
+      .tag {
+        padding: 6px 15px;
+        border-radius: 20px;
+        font-size: 0.85em;
+        font-weight: 500;
+        transition: all 0.3s ease;
+      }
+
+      .tag:hover {
+        transform: scale(1.1);
+      }
+
+      .tag-work {
+        background: #00b894;
+        color: white;
+      }
+      .tag-travel {
+        background: #0984e3;
+        color: white;
+      }
+      .tag-desert {
+        background: #fdcb6e;
+        color: #000;
+      }
+      .tag-special {
+        background: #e17055;
+        color: white;
+      }
+      .tag-activity {
+        background: #a29bfe;
+        color: white;
+      }
+
+      /* Interactive Map */
+      .map-section {
+        margin: 50px 0;
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 30px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .route-map {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 20px;
+        position: relative;
+        padding: 30px 0;
+      }
+
+      .city-node {
+        background: rgba(255, 255, 255, 0.1);
+        border: 2px solid #4ecdc4;
+        padding: 15px 25px;
+        border-radius: 30px;
+        font-weight: bold;
+        position: relative;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        z-index: 10;
+      }
+
+      .city-node:hover {
+        transform: scale(1.1);
+        background: #4ecdc4;
+        color: #000;
+        box-shadow: 0 10px 30px rgba(78, 205, 196, 0.5);
+      }
+
+      .city-node.current {
+        background: #ff6b6b;
+        border-color: #ff6b6b;
+        animation: pulse 2s infinite;
+      }
+
+      .route-line {
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(
+          90deg,
+          #ff6b6b 0%,
+          #4ecdc4 50%,
+          #ffe66d 100%
+        );
+        z-index: 1;
+      }
+
+      /* Cost Breakdown */
+      .cost-section {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 30px;
+        margin: 50px 0;
+      }
+
+      .cost-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px;
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 10px;
+        margin-bottom: 10px;
+        transition: all 0.3s ease;
+      }
+
+      .cost-item:hover {
+        transform: translateX(5px);
+        background: rgba(0, 0, 0, 0.5);
+      }
+
+      .cost-total {
+        background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+        font-weight: bold;
+        font-size: 1.2em;
+      }
+
+      /* Transport Section */
+      .transport-section {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 30px;
+        margin: 50px 0;
+      }
+
+      .transport-item {
+        background: rgba(0, 0, 0, 0.3);
+        padding: 20px;
+        border-radius: 15px;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        transition: all 0.3s ease;
+      }
+
+      .transport-item:hover {
+        transform: translateX(5px);
+        background: rgba(0, 0, 0, 0.5);
+      }
+
+      .transport-icon {
+        font-size: 2em;
+        width: 50px;
+        text-align: center;
+      }
+
+      .transport-booked {
+        background: rgba(0, 184, 148, 0.2);
+        border: 1px solid #00b894;
+      }
+
+      /* Omar Departure */
+      .omar-section {
+        background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+        border-radius: 20px;
+        padding: 40px;
+        margin: 50px 0;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .omar-section::before {
+        content: "✈️";
+        position: absolute;
+        font-size: 150px;
+        opacity: 0.1;
+        right: -30px;
+        top: -30px;
+        animation: float 6s ease-in-out infinite;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-20px);
+        }
+      }
+
+      /* Interactive Elements */
+      .expandable {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+      }
+
+      .expandable.active {
+        max-height: 500px;
+      }
+
+      .expand-btn {
+        background: rgba(255, 255, 255, 0.1);
+        border: none;
+        color: #4ecdc4;
+        padding: 5px 15px;
+        border-radius: 15px;
+        cursor: pointer;
+        font-size: 0.85em;
+        transition: all 0.3s ease;
+      }
+
+      .expand-btn:hover {
+        background: #4ecdc4;
+        color: #000;
+      }
+
+      /* Work Section */
+      .work-section {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 30px;
+        margin: 50px 0;
+      }
+
+      .work-period {
+        background: rgba(0, 0, 0, 0.3);
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 10px;
+        color: #b2bec3;
+      }
+
+      .work-total {
+        background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+        padding: 15px;
+        border-radius: 10px;
+        font-weight: bold;
+        text-align: center;
+        margin-top: 20px;
+      }
+
+      /* Mobile Responsive */
+      @media (max-width: 768px) {
+        .title {
+          font-size: 2.5em;
+        }
+
+        .timeline-line {
+          left: 20px;
+        }
+
+        .day-card {
+          margin-left: 50px;
+        }
+
+        .day-number {
+          left: -35px;
+          width: 30px;
+          height: 30px;
+          font-size: 1em;
+        }
+
+        .route-map {
+          flex-direction: column;
+        }
+
+        .route-line {
+          width: 2px;
+          height: 100%;
+          left: 50%;
+          top: 0;
+        }
+      }
+
+      /* Loading Animation */
+      .loading {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        transition: opacity 0.5s ease;
+      }
+
+      .loading.hidden {
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .loader {
+        width: 60px;
+        height: 60px;
+        border: 3px solid rgba(255, 255, 255, 0.1);
+        border-top-color: #ff6b6b;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="loading" id="loader">
+      <div class="loader"></div>
+    </div>
+
+    <div class="bg-animation">
+      <div class="stars"></div>
+    </div>
+
+    <div class="container">
+      <header class="header">
+        <h1 class="title">Morocco Adventure 2025</h1>
+        <p class="subtitle">June 18 - July 20 • Denis & Omar's Epic Journey</p>
+      </header>
+
+      <div class="alert-banner">
+        🚨 UPDATE: Hostel cancellation requested! Need Sunday night
+        accommodation + NEW Agafay Desert experience added!
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card" onclick="scrollToSection('journey')">
+          <div class="stat-value">33</div>
+          <div class="stat-label">Total Days</div>
+        </div>
+        <div class="stat-card" onclick="scrollToSection('map')">
+          <div class="stat-value">8</div>
+          <div class="stat-label">Cities</div>
+        </div>
+        <div class="stat-card" onclick="scrollToSection('cost')">
+          <div class="stat-value">£300+</div>
+          <div class="stat-label">Accommodation</div>
+        </div>
+        <div class="stat-card" onclick="scrollToSection('work')">
+          <div class="stat-value">~14</div>
+          <div class="stat-label">Work Days</div>
+        </div>
+      </div>
+
+      <section class="map-section" id="map">
+        <h2 class="section-title">🗺️ Journey Route</h2>
+        <div class="route-map">
+          <div class="route-line"></div>
+          <div class="city-node">✈️ Ouarzazate</div>
+          <div class="city-node">Marrakesh</div>
+          <div class="city-node">🐪 Sahara</div>
+          <div class="city-node">⛺ Agafay</div>
+          <div class="city-node">🏖️ Agadir</div>
+          <div class="city-node">Casablanca</div>
+          <div class="city-node">Kenitra</div>
+          <div class="city-node">✈️ Tangier</div>
+        </div>
+      </section>
+
+      <section class="journey-section" id="journey">
+        <h2 class="section-title">📅 Day-by-Day Journey</h2>
+        <div class="timeline">
+          <div class="timeline-line"></div>
+
+          <div class="day-card">
+            <div class="day-number">1</div>
+            <div class="day-header">
+              <div class="date-info">Wednesday, June 18</div>
+            </div>
+            <div class="location-name">✈️ Arrival in Ouarzazate</div>
+            <div class="accommodation-info">
+              <div class="accommodation-name">Appartement City Center</div>
+              <div class="booking-ref">Booking: 544934835 • €20.00</div>
+            </div>
+            <div class="tags">
+              <span class="tag tag-travel">Arrival Day</span>
+              <span class="tag tag-activity">Settle In</span>
+            </div>
+          </div>
+
+          <div class="day-card">
+            <div class="day-number">2</div>
+            <div class="day-header">
+              <div class="date-info">Thursday, June 19</div>
+            </div>
+            <div class="location-name">Ouarzazate → Marrakesh</div>
+            <div class="accommodation-info">
+              <div class="accommodation-name">
+                Riad La Porte Rouge By La Siredrah
+              </div>
+              <div class="booking-ref">Booking: 6150557377 • €49.16 paid</div>
+            </div>
+            <div class="tags">
+              <span class="tag tag-work">Morning Work</span>
+              <span class="tag tag-travel">Evening Bus (4-5h)</span>
+            </div>
+          </div>
+
+          <div class="day-card">
+            <div class="day-number">3</div>
+            <div class="day-header">
+              <div class="date-info">Friday, June 20</div>
+            </div>
+            <div class="location-name">🚐 Desert Tour Day 1</div>
+            <div class="accommodation-info">
+              <div class="accommodation-name">
+                Marrakech → Tinghir via Atlas Mountains
+              </div>
+              <div class="booking-ref">
+                Booking: 1269257223 • Pickup: 7:00 AM
+              </div>
+            </div>
+            <div class="tags">
+              <span class="tag tag-desert">Ait Benhaddou</span>
+              <span class="tag tag-desert">Rose Valley</span>
+              <span class="tag tag-activity">Hotel Tinghir</span>
+            </div>
+            <button class="expand-btn" onclick="toggleExpand(this)">
+              View Details
+            </button>
+            <div class="expandable">
+              <p style="margin-top: 10px; color: #b2bec3">
+                • 7:00 AM pickup from Riad La Porte Rouge<br />
+                • Cross Tizi-n-Tichka Atlas pass<br />
+                • Visit UNESCO site Ait Benhaddou (lunch)<br />
+                • Continue through Rose Valley<br />
+                • Overnight in Tinghir hotel with dinner
+              </p>
+            </div>
+          </div>
+
+          <div class="day-card">
+            <div class="day-number">4</div>
+            <div class="day-header">
+              <div class="date-info">Saturday, June 21</div>
+            </div>
+            <div class="location-name">🐪 Desert Tour Day 2</div>
+            <div class="accommodation-info">
+              <div class="accommodation-name">Tinghir → Merzouga Sahara</div>
+              <div class="booking-ref">Erg Chebbi Dunes • Desert Camp</div>
+            </div>
+            <div class="tags">
+              <span class="tag tag-desert">Todra Gorges</span>
+              <span class="tag tag-desert">Camel Sunset</span>
+              <span class="tag tag-special">Berber Camp</span>
+            </div>
+            <button class="expand-btn" onclick="toggleExpand(this)">
+              View Details
+            </button>
+            <div class="expandable">
+              <p style="margin-top: 10px; color: #b2bec3">
+                • Morning: Drive through Todra Gorges<br />
+                • Leave main luggage at Merzouga hotel<br />
+                • Afternoon: Camel ride into dunes<br />
+                • Sandboarding on highest dunes<br />
+                • Night: Desert camp with drums music
+              </p>
+            </div>
+          </div>
+
+          <div class="day-card">
+            <div class="day-number">5</div>
+            <div class="day-header">
+              <div class="date-info">Sunday, June 22</div>
+            </div>
+            <div class="location-name">🌅 Desert Tour Day 3</div>
+            <div class="accommodation-info">
+              <div class="accommodation-name">Merzouga → Marrakesh</div>
+              <div class="booking-ref">Arrival: ~7:30 PM</div>
+            </div>
+            <div class="tags">
+              <span class="tag tag-desert">Sunrise Dunes</span>
+              <span class="tag tag-travel">Return Journey</span>
+              <span class="tag tag-special">Need Hotel!</span>
+            </div>
+            <div
+              style="
+                background: rgba(255, 107, 107, 0.2);
+                padding: 10px;
+                border-radius: 10px;
+                margin-top: 10px;
+              "
+            >
+              ⚠️ <strong>NEED ACCOMMODATION:</strong> Sunday night in Marrakesh
+              (hostel cancelled)
+            </div>
+          </div>
+
+          <div class="day-card highlight">
+            <div class="day-number">6</div>
+            <div class="day-header">
+              <div class="date-info">Monday, June 23</div>
+            </div>
+            <div class="location-name">⛺ Agafay Desert Experience</div>
+            <div class="accommodation-info">
+              <div class="accommodation-name">
+                Overnight Desert Camp with Show
+              </div>
+              <div class="booking-ref">
+                Booking: 1269263275 • Pickup: 4:00 PM
+              </div>
+            </div>
+            <div class="tags">
+              <span class="tag tag-work">Morning Work</span>
+              <span class="tag tag-special">Pool Access</span>
+              <span class="tag tag-desert">Fire Show</span>
+            </div>
+            <button class="expand-btn" onclick="toggleExpand(this)">
+              View Details
+            </button>
+            <div class="expandable">
+              <p style="margin-top: 10px; color: #b2bec3">
+                • Work until 3:30 PM<br />
+                • 4:00 PM pickup from accommodation<br />
+                • Welcome tea at desert camp<br />
+                • Optional: Quad/camel ride (extra cost)<br />
+                • Dinner: Tagine, couscous, dessert<br />
+                • Entertainment: Belly dancing, fire show, gnawa music<br />
+                • Overnight in private deluxe tent<br />
+                • Pool access included
+              </p>
+            </div>
+          </div>
+
+          <div class="day-card">
+            <div class="day-number">7</div>
+            <div class="day-header">
+              <div class="date-info">Tuesday, June 24</div>
+            </div>
+            <div class="location-name">Agafay → Marrakesh → Agadir</div>
+            <div class="accommodation-info">
+              <div class="accommodation-name">Sud Bahia Agadir Hotel</div>
+              <div class="booking-ref">
+                Booking: 544955779 • 9 nights • £191.85
+              </div>
+            </div>
+            <div class="tags">
+              <span class="tag tag-activity">Morning Return</span>
+              <span class="tag tag-activity">Explore Marrakesh</span>
+              <span class="tag tag-travel">PM Bus to Agadir</span>
+            </div>
+          </div>
+
+          <div class="day-card">
+            <div class="day-number">8-16</div>
+            <div class="day-header">
+              <div class="date-info">June 25 - July 3</div>
+            </div>
+            <div class="location-name">🏖️ Agadir Beach Life</div>
+            <div class="accommodation-info">
+              <div class="accommodation-name">
+                Sud Bahia Agadir "Bahia City Hotel"
+              </div>
+              <div class="booking-ref">
+                Main work base • High floor, quiet room
+              </div>
+            </div>
+            <div class="tags">
+              <span class="tag tag-work">7-8 Work Days</span>
+              <span class="tag tag-activity">Beach</span>
+              <span class="tag tag-activity">Surfing</span>
+            </div>
+          </div>
+
+          <div class="day-card">
+            <div class="day-number">17</div>
+            <div class="day-header">
+              <div class="date-info">Thursday-Friday, July 3-4</div>
+            </div>
+            <div class="location-name">Casablanca</div>
+            <div class="accommodation-info">
+              <div class="accommodation-name">Hotel Majestic</div>
+              <div class="booking-ref">Booking: 73128204416257 • £31.34</div>
+            </div>
+            <div class="tags">
+              <span class="tag tag-travel">Thu PM arrival</span>
+              <span class="tag tag-special">🕌 Friday Jummah</span>
+              <span class="tag tag-travel">Fri PM to Kenitra</span>
+            </div>
+          </div>
+
+          <div class="day-card">
+            <div class="day-number">18-24</div>
+            <div class="day-header">
+              <div class="date-info">July 4-11</div>
+            </div>
+            <div class="location-name">Kenitra</div>
+            <div class="accommodation-info">
+              <div class="accommodation-name">👵 Omar's Grandma's House</div>
+              <div class="booking-ref">Family hosting • FREE accommodation</div>
+            </div>
+            <div class="tags">
+              <span class="tag tag-special">Family Time</span>
+              <span class="tag tag-work">3-4 Work Days</span>
+              <span class="tag tag-activity">Local Life</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="cost-section" id="cost">
+        <h2 class="section-title">💰 Cost Breakdown</h2>
+        <div class="cost-item">
+          <span>Ouarzazate - Appartement City Center</span>
+          <span>€20.00</span>
+        </div>
+        <div class="cost-item">
+          <span>Marrakesh - Riad La Porte Rouge</span>
+          <span>€49.16</span>
+        </div>
+        <div class="cost-item">
+          <span>Marrakesh - Red Vibes Hostel (CANCELLING)</span>
+          <span>£26.12</span>
+        </div>
+        <div class="cost-item">
+          <span>Marrakesh - Sunday Night (NEEDED)</span>
+          <span>TBD</span>
+        </div>
+        <div class="cost-item">
+          <span>Agafay Desert Experience</span>
+          <span>TBD</span>
+        </div>
+        <div class="cost-item">
+          <span>Agadir - Sud Bahia Hotel (9 nights)</span>
+          <span>£191.85</span>
+        </div>
+        <div class="cost-item">
+          <span>Casablanca - Hotel Majestic</span>
+          <span>£31.34</span>
+        </div>
+        <div class="cost-item">
+          <span>Kenitra - Omar's Grandma</span>
+          <span>FREE</span>
+        </div>
+        <div class="cost-item cost-total">
+          <span>TOTAL (estimate)</span>
+          <span>~£300+</span>
+        </div>
+      </section>
+
+      <section class="transport-section" id="transport">
+        <h2 class="section-title">🚌 Transportation Schedule</h2>
+        <div class="transport-item">
+          <div class="transport-icon">🚌</div>
+          <div>
+            <strong>June 19 Evening:</strong> Ouarzazate → Marrakesh<br />
+            <span style="color: #b2bec3"
+              >CTM/Supratours bus (4-5 hours) - Need to book</span
+            >
+          </div>
+        </div>
+        <div class="transport-item transport-booked">
+          <div class="transport-icon">🚐</div>
+          <div>
+            <strong>June 20-22:</strong> Desert Tour Transport<br />
+            <span style="color: #00b894"
+              >✅ BOOKED - Pickup 7:00 AM from Riad</span
+            >
+          </div>
+        </div>
+        <div class="transport-item transport-booked">
+          <div class="transport-icon">🚐</div>
+          <div>
+            <strong>June 23:</strong> Agafay Desert Transport<br />
+            <span style="color: #00b894"
+              >✅ BOOKED - Pickup 4:00 PM • Return June 24 AM</span
+            >
+          </div>
+        </div>
+        <div class="transport-item">
+          <div class="transport-icon">🚌</div>
+          <div>
+            <strong>June 24 Afternoon:</strong> Marrakesh → Agadir<br />
+            <span style="color: #b2bec3"
+              >After desert return - Bus/train (3 hours)</span
+            >
+          </div>
+        </div>
+        <div class="transport-item">
+          <div class="transport-icon">🚌</div>
+          <div>
+            <strong>July 3 Afternoon:</strong> Agadir → Casablanca<br />
+            <span style="color: #b2bec3"
+              >CTM bus (5-6 hours) - Book in advance</span
+            >
+          </div>
+        </div>
+        <div class="transport-item">
+          <div class="transport-icon">🚂</div>
+          <div>
+            <strong>July 4 Evening:</strong> Casablanca → Kenitra<br />
+            <span style="color: #b2bec3"
+              >Train via Rabat (1 hour) - After Jummah</span
+            >
+          </div>
+        </div>
+        <div class="transport-item transport-booked">
+          <div class="transport-icon">🚄</div>
+          <div>
+            <strong>July 11:</strong> Kenitra → Tangier Airport<br />
+            <span style="color: #00b894"
+              >✅ Fast train available - Omar's NYC flight booked</span
+            >
+          </div>
+        </div>
+      </section>
+
+      <section class="work-section" id="work">
+        <h2 class="section-title">💻 Work Schedule</h2>
+        <div class="work-period">
+          <strong>June 19:</strong> Ouarzazate (morning) - 0.5 days
+        </div>
+        <div class="work-period">
+          <strong>June 23:</strong> Marrakesh (until 3:30 PM) - 0.5 days
+        </div>
+        <div class="work-period">
+          <strong>June 25 - July 2:</strong> Agadir stretch - 7-8 days
+        </div>
+        <div class="work-period">
+          <strong>July 3:</strong> Agadir (morning) - 0.5 days
+        </div>
+        <div class="work-period">
+          <strong>July 7-10:</strong> Kenitra - 3-4 days
+        </div>
+        <div class="work-period">
+          <strong>Bus journeys:</strong> With 5G router - 1-2 days
+        </div>
+        <div class="work-total">
+          <strong>TOTAL: ~14 work days</strong>
+        </div>
+      </section>
+
+      <section class="omar-section">
+        <h2 style="font-size: 2em; margin-bottom: 20px">
+          ✈️ Omar's NYC Departure
+        </h2>
+        <p style="font-size: 1.3em; margin-bottom: 10px">
+          <strong>Friday, July 11, 2025</strong>
+        </p>
+        <p style="font-size: 1.1em; margin-bottom: 20px">
+          Tangier Airport → New York City
+        </p>
+        <div
+          style="
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+          "
+        >
+          <p>
+            🚄 <strong>Transportation:</strong> Fast train from Kenitra to
+            Tangier Airport
+          </p>
+          <p>
+            ⏰ <strong>Departure:</strong> Early morning for international
+            flight
+          </p>
+          <p>✅ <strong>Status:</strong> NYC tickets already booked!</p>
+        </div>
+        <p style="font-size: 1.2em; margin-top: 30px">
+          <strong>Denis continues solo: July 11-20!</strong>
+        </p>
+        <p>
+          9 days to explore Fes, Chefchaouen, Tangier, or discover new
+          adventures
+        </p>
+      </section>
+
+      <section class="alerts-section" style="margin: 50px 0">
+        <h2 class="section-title">⚠️ Action Items</h2>
+        <div
+          style="
+            background: rgba(255, 107, 107, 0.2);
+            border: 2px solid #ff6b6b;
+            border-radius: 20px;
+            padding: 25px;
+          "
+        >
+          <h3 style="color: #ff6b6b; margin-bottom: 15px">URGENT NEEDS:</h3>
+          <ol style="color: #fff; line-height: 2">
+            <li>
+              <strong>Sunday Night Accommodation:</strong> Need hotel in
+              Marrakesh for June 22 (after desert return)
+            </li>
+            <li>
+              <strong>Hostel Cancellation:</strong> Confirm Red Vibes Hostel
+              cancellation status
+            </li>
+            <li>
+              <strong>Bus Tickets:</strong> Book Ouarzazate→Marrakesh (June 19)
+              and Marrakesh→Agadir (June 24)
+            </li>
+            <li>
+              <strong>Agafay Desert Payment:</strong> Confirm total cost for
+              booking #1269263275
+            </li>
+          </ol>
+        </div>
+      </section>
+    </div>
+
+    <!-- JavaScript Modules -->
+    <script src="assets/js/data.js"></script>
+    <script src="assets/js/utils.js"></script>
+    <script src="assets/js/weather.js"></script>
+    <script src="assets/js/maps.js"></script>
+    <script src="assets/js/app.js"></script>
+
+    <script>
+      // Smooth scroll to sections
+      function scrollToSection(sectionId) {
+        document.getElementById(sectionId).scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }
+
+      // Toggle expandable content
+      function toggleExpand(button) {
+        const expandable = button.nextElementSibling;
+        expandable.classList.toggle("active");
+        button.textContent = expandable.classList.contains("active")
+          ? "Hide Details"
+          : "View Details";
+      }
+
+      // Add hover effects to city nodes
+      const cityNodes = document.querySelectorAll(".city-node");
+      cityNodes.forEach((node, index) => {
+        node.addEventListener("mouseenter", () => {
+          node.style.transform = "scale(1.2)";
+          node.style.zIndex = "20";
+        });
+        node.addEventListener("mouseleave", () => {
+          node.style.transform = "scale(1)";
+          node.style.zIndex = "10";
+        });
+      });
+
+      // Animate elements on scroll
+      const observerOptions = {
+        threshold: 0.1,
+        rootMargin: "0px 0px -100px 0px",
+      };
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.style.opacity = "1";
+            entry.target.style.transform = "translateY(0)";
+          }
+        });
+      }, observerOptions);
+
+      // Observe all cards
+      document.querySelectorAll(".day-card, .stat-card").forEach((card) => {
+        card.style.opacity = "0";
+        card.style.transform = "translateY(20px)";
+        card.style.transition = "all 0.6s ease";
+        observer.observe(card);
+      });
+
+      // Interactive route map
+      let currentCity = 0;
+      const cities = [
+        "Ouarzazate",
+        "Marrakesh",
+        "Sahara",
+        "Agafay",
+        "Agadir",
+        "Casablanca",
+        "Kenitra",
+        "Tangier",
+      ];
+
+      setInterval(() => {
+        cityNodes.forEach((node, index) => {
+          node.classList.remove("current");
+        });
+        cityNodes[currentCity].classList.add("current");
+        currentCity = (currentCity + 1) % cityNodes.length;
+      }, 2000);
+
+      // Add parallax effect to background
+      window.addEventListener("scroll", () => {
+        const scrolled = window.pageYOffset;
+        const stars = document.querySelector(".stars");
+        stars.style.transform = `translateY(${scrolled * 0.5}px)`;
+      });
+    </script>
+  </body>
+</html>
