@@ -292,32 +292,58 @@ class MoroccoAdventureApp {
   // Load weather data for all cities
   async loadWeatherData() {
     try {
-      // Load multi-city weather
-      const multiCityWidgets = await this.weatherWidget.renderMultiCityWeather(
-        TripData.locations
-      );
+      // Load multi-city weather using components
+      const weatherCards = TripData.locations
+        .map((location) => {
+          // Create mock weather data for now (real API integration would go here)
+          const mockWeather = {
+            location: location.name,
+            temp: Math.round(Math.random() * 15 + 20), // 20-35°C
+            description: ["sunny", "partly cloudy", "clear", "warm"][
+              Math.floor(Math.random() * 4)
+            ],
+            humidity: Math.round(Math.random() * 30 + 40), // 40-70%
+            windSpeed: Math.round(Math.random() * 10 + 5), // 5-15 km/h
+          };
+          return Components.WeatherCard(mockWeather);
+        })
+        .join("");
+
       const multiCityContainer = document.getElementById("multi-city-content");
       if (multiCityContainer) {
-        multiCityContainer.innerHTML = "";
-        multiCityWidgets.forEach((widget) =>
-          multiCityContainer.appendChild(widget)
-        );
+        multiCityContainer.innerHTML = weatherCards;
       }
 
-      // Load current location weather (first location for demo)
-      const currentLocation = TripData.locations[0];
-      const currentWeatherWidget =
-        await this.weatherWidget.renderCurrentWeather(
-          currentLocation.name,
-          currentLocation.coordinates.lat,
-          currentLocation.coordinates.lng
-        );
+      // Load current weather for main destination
       const currentWeatherContent = document.getElementById(
         "current-weather-content"
       );
       if (currentWeatherContent) {
-        currentWeatherContent.innerHTML = "";
-        currentWeatherContent.appendChild(currentWeatherWidget);
+        const mainWeather = {
+          location: "Marrakesh",
+          temp: 28,
+          description: "perfect for travel",
+          humidity: 45,
+          windSpeed: 8,
+        };
+        currentWeatherContent.innerHTML = Components.WeatherCard(mainWeather);
+      }
+
+      // Load 7-day forecast
+      const forecastData = this.generateMockForecast();
+      const forecastContainer = document.getElementById("forecast-content");
+      if (forecastContainer) {
+        forecastContainer.innerHTML = Components.WeatherForecast(forecastData);
+      }
+
+      // Load recommendations
+      const recommendations = this.generateWeatherRecommendations();
+      const recommendationsContainer = document.getElementById(
+        "recommendations-content"
+      );
+      if (recommendationsContainer) {
+        recommendationsContainer.innerHTML =
+          Components.WeatherRecommendations(recommendations);
       }
     } catch (error) {
       console.error("Error loading weather data:", error);
@@ -329,6 +355,50 @@ class MoroccoAdventureApp {
           "⚠️ Weather data temporarily unavailable";
       }
     }
+  }
+
+  // Generate mock forecast data
+  generateMockForecast() {
+    const days = ["Today", "Tomorrow", "Mon", "Tue", "Wed", "Thu", "Fri"];
+    const icons = ["☀️", "⛅", "🌤️", "☀️", "🌤️", "⛅", "☀️"];
+    const descriptions = [
+      "sunny",
+      "partly cloudy",
+      "clear",
+      "warm",
+      "pleasant",
+      "bright",
+      "perfect",
+    ];
+
+    return days.map((day, index) => ({
+      date: day,
+      icon: icons[index],
+      maxTemp: Math.round(Math.random() * 8 + 28), // 28-36°C
+      minTemp: Math.round(Math.random() * 5 + 18), // 18-23°C
+      description: descriptions[index],
+    }));
+  }
+
+  // Generate weather recommendations
+  generateWeatherRecommendations() {
+    return [
+      {
+        type: "success",
+        icon: "🌞",
+        message: "Perfect weather for desert tours and outdoor activities",
+      },
+      {
+        type: "info",
+        icon: "💧",
+        message: "Remember to stay hydrated - carry extra water",
+      },
+      {
+        type: "warning",
+        icon: "🕶️",
+        message: "Strong UV - bring sunscreen and sunglasses",
+      },
+    ];
   }
 
   // Load interactive map

@@ -1,18 +1,9 @@
 {
   "version": 2,
   "name": "morocco-adventure-2025",
-  "builds": [
-    {
-      "src": "index.html",
-      "use": "@vercel/static"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/$1"
-    }
-  ],
+  "public": true,
+  "cleanUrls": true,
+  "trailingSlash": false,
   "headers": [
     {
       "source": "/(.*)",
@@ -62,10 +53,5 @@
         }
       ]
     }
-  ],
-  "functions": {
-    "index.html": {
-      "includeFiles": "**"
-    }
-  }
+  ]
 }

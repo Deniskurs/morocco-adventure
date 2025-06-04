@@ -181,6 +181,82 @@ const Components = {
   },
 
   /**
+   * 7-Day Forecast Component
+   */
+  WeatherForecast(forecastData) {
+    if (!forecastData || !Array.isArray(forecastData)) {
+      return `
+        <div class="forecast-container">
+          <div class="forecast-placeholder">
+            <p>📅 7-day forecast will appear here when weather data loads</p>
+          </div>
+        </div>
+      `;
+    }
+
+    const forecastItems = forecastData
+      .slice(0, 7)
+      .map(
+        (day) => `
+      <div class="forecast-day">
+        <div class="forecast-date">${day.date}</div>
+        <div class="forecast-icon">${day.icon}</div>
+        <div class="forecast-temp">${day.maxTemp}°/${day.minTemp}°</div>
+        <div class="forecast-desc">${day.description}</div>
+      </div>
+    `
+      )
+      .join("");
+
+    return `
+      <div class="forecast-container">
+        ${forecastItems}
+      </div>
+    `;
+  },
+
+  /**
+   * Weather Recommendations Component
+   */
+  WeatherRecommendations(recommendations) {
+    if (
+      !recommendations ||
+      !Array.isArray(recommendations) ||
+      recommendations.length === 0
+    ) {
+      return `
+        <div class="recommendations-list">
+          <div class="recommendation-item success">
+            <span class="rec-icon">✅</span>
+            <span class="rec-message">Current conditions look good for travel!</span>
+          </div>
+          <div class="recommendation-item info">
+            <span class="rec-icon">🌤️</span>
+            <span class="rec-message">Perfect weather for outdoor activities in Morocco</span>
+          </div>
+        </div>
+      `;
+    }
+
+    const recommendationItems = recommendations
+      .map(
+        (rec) => `
+      <div class="recommendation-item ${rec.type}">
+        <span class="rec-icon">${rec.icon}</span>
+        <span class="rec-message">${rec.message}</span>
+      </div>
+    `
+      )
+      .join("");
+
+    return `
+      <div class="recommendations-list">
+        ${recommendationItems}
+      </div>
+    `;
+  },
+
+  /**
    * Navigation Component
    */
   Navigation() {
